@@ -389,7 +389,7 @@ var app = new Vue({
                     url: this.urls.api.CheckForUpdates+self.version,
                 })
                 .then(function(response) {
-                    self.update = response.data.result;
+                    self.update = response.data.support.result;
                 })
                 .catch(function(error) {
                     console.log(error);
