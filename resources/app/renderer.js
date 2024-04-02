@@ -1,16 +1,19 @@
 // This file is required by the index.html file and will
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process. 
-
 var fs = require('fs');
 
 var path = require('path');
 
-var { spawn } = require('child_process');
+var {
+    spawn
+} = require('child_process');
 
 var remoteApp = require('electron').remote.app;
 
-var { shell } = require('electron');
+var {
+    shell
+} = require('electron');
 
 var ipcRenderer = require('electron').ipcRenderer;
 
@@ -82,13 +85,13 @@ var app = new Vue({
             level: 0,
             points: 0,
             totalpoints: 0,
-	        isbanned: null,
+            isbanned: null,
             userrole: null,
         },
         formSettings: {
             type: settings.get('type', 'cpu'),
             cputype: settings.get('cputype', 'all'),
-	    cryptotype: settings.get('cryptotype', 'RECOMENDED'),
+            cryptotype: settings.get('cryptotype', 'RECOMENDED'),
             workerId: settings.get('worker_id', '1'),
             userId: settings.get('user_id', null),
             uac: settings.get('uac', 'disabled'),
@@ -110,8 +113,8 @@ var app = new Vue({
         this.fetchPoolData();
 
         this.fetchPointsPerHash();
-        
-	setInterval(this.updateStats, 1000);
+
+        setInterval(this.updateStats, 1000);
 
         setInterval(this.profileStats, 1000);
 
@@ -129,7 +132,7 @@ var app = new Vue({
             settings.set('type', this.formSettings.type);
             settings.set('cputype', this.formSettings.cputype);
             settings.set('worker_id', this.formSettings.workerId);
-	    settings.set('cryptotype', this.formSettings.cryptotype);
+            settings.set('cryptotype', this.formSettings.cryptotype);
             settings.set('user_id', this.formSettings.userId);
             settings.set('uac', this.formSettings.uac);
 
@@ -152,52 +155,122 @@ var app = new Vue({
                 toastr.error('Pool data is not loaded yet, please wait a second...');
                 return;
             }
-			
+
             // make sure the userId has a valid format
             if (/^[0-9]+$/.test(this.formSettings.userId) !== true) {
                 toastr.remove();
                 toastr.error('Please set a valid Miner UserID in the "Settings" tab.');
                 return;
             }
-		
-	    let workerid, parameters ;
 
+            let workerid, parameters;
             this.logMessage('Miner started.');
 
-	    switch (this.formSettings.cryptotype) {
-		case 'RECOMENDED':
-                    workerid = `${this.poolDataRec.user.replace("{{MINERID}}", `${this.formSettings.userId}_${this.formSettings.workerId}`)}`;
-		    parameters = [
-                      '--apihost',  '127.0.0.1',
-                      '--apiport',  '8890',
-                      '--algo', `${this.poolDataRec.algo}`,
-		      '--pool', `${this.poolDataRec.url}`,
-                      '--user', `${workerid}`,
-                      '--pass', `${this.poolDataRec.pass.replace("{{MINERID}}", `${this.formSettings.userId}_${this.formSettings.workerId}`)}`,
+            switch (this.formSettings.cryptotype) {
+                case 'RECOMENDED':
+                    workerid = `${this.poolDataRec.user.replace("{{MINERID}}", `
+                    $ {
+                        this.formSettings.userId
+                    }
+                    _$ {
+                        this.formSettings.workerId
+                    }
+                    `)}`;
+                    parameters = [
+                        '--pool', `${this.poolDataRec.url}`,
+                        '--wallet', `${workerid}`,
+                        `--algorithm`, `${this.poolDataRec.algo}`,
+                        '--api-enable',
                     ];
-		break; // Don't forget the break statement
-		default:
-                    workerid = `${this.formSettings.cryptotype}:${this.poolData[this.formSettings.cryptotype].user}.${this.formSettings.userId}_${this.formSettings.workerId}`;
-            	    parameters = [
-                      '--apihost',  '127.0.0.1',
-                      '--apiport',  '8890',
-                      '--algo', `${this.poolData[this.formSettings.cryptotype].PYRIN.algo}`,
-		      '--pool', `${this.poolData[this.formSettings.cryptotype].PYRIN.url}`,
-                      '--user', `${workerid}`,
-                      '--pass', `x`,
-                    ];
-		break; // Don't forget the break statement
-	    }
-		
-            var minerPath = path.join(__dirname, 'miner', 'multi', 'lolMiner.exe');
-
-	    switch (this.formSettings.type) {
+                    break; // Don't forget the break statement
                 default:
+                    workerid = `${this.formSettings.cryptotype}:${this.poolData[this.formSettings.cryptotype].user}.${this.formSettings.userId}_${this.formSettings.workerId}`;
+                    parameters = [
+                        '--pool', `${this.poolData[this.formSettings.cryptotype].XMR.url}`,
+                        '--wallet', `${workerid}`,
+                        `--algorithm`, `${this.poolData[this.formSettings.cryptotype].XMR.algo}`,
+                        '--api-enable',
+                    ];
+                    break; // Don't forget the break statement
+            }
+            var minerPath = path.join(__dirname, 'miner', 'multi', 'SRBMiner-MULTI.exe');
+
+            switch (this.formSettings.type) {
+
+                case 'gpu_and_cpu': {
+                    break;
+                }
+
+                case 'gpu': {
+                    parameters.push('--disable-cpu');
+                    break;
+                }
+
+                case 'cpu': {
+                    parameters.push('--disable-gpu-amd');
+                    parameters.push('--disable-gpu-nividia');
+                    parameters.push('--disable-gpu-intel');
+                    parameters.push('--disable-gpu');
+                    break;
+                }
+                default:
+                    // this should never happen
             }
 
 
 
             switch (this.formSettings.cputype) {
+
+                case 'all': {
+                    // do nothing
+
+                    // Use ALL CORES
+
+                    break;
+                }
+
+                case 'high': {
+                    // 8 Cores
+                    parameters.push('--cpu-threads', '8');
+                    break;
+                }
+
+                case 'medium-4': {
+                    // 7 Cores
+                    parameters.push('--cpu-threads', '7');
+                    break;
+                }
+                case 'medium-3': {
+                    // 6 Cores
+                    parameters.push('--cpu-threads', '6');
+                    break;
+                }
+
+                case 'medium-2': {
+                    // 5 Cores
+                    parameters.push('--cpu-threads', '5');
+                    break;
+                }
+                case 'medium-1': {
+                    // 4 Cores
+                    parameters.push('--cpu-threads', '4');
+                    break;
+                }
+                case 'medium': {
+                    // 3 Cores
+                    parameters.push('--cpu-threads', '3');
+                    break;
+                }
+                case 'low': {
+                    // 2 Cores
+                    parameters.push('--cpu-threads', '2');
+                    break;
+                }
+                case 'verylow': {
+                    // 1 Cores
+                    parameters.push('--cpu-threads', '1');
+                    break;
+                }
                 default:
                     // this should never happen
             }
@@ -261,25 +334,24 @@ var app = new Vue({
 
             var self = this;
 
-            axios.get('http://localhost:8890/')
-                .then(function(response) {
-                    self.stats.hashrate = response.data.Algorithms[0].Total_Performance;
-                    self.stats.totalHashes = response.data.Algorithms[0].Total_Accepted;
-                    self.stats.ping = 'NON PING REQUIRED';
-                    self.stats.threads = response.data.Num_Workers;
+            axios.get('http://localhost:21550/').then(function(response) {
+                self.stats.hashrate = response.data.algorithms[0].hashrate['1min'];
+                self.stats.totalHashes = response.data.algorithms[0].shares.accepted;
+                self.stats.ping = response.data.algorithms[0].pool.latency;
+                self.stats.threads = response.data.total_workers;
             }).catch(function(error) {
                 console.log(error);
             });
 
         },
-	    
-	    profileStats: function() {
+
+        profileStats: function() {
 
             var self = this;
 
             axios({
                     method: 'GET',
-                    url: this.urls.api.GetUserChecker+this.formSettings.userId,
+                    url: this.urls.api.GetUserChecker + this.formSettings.userId,
                 })
                 .then(function(res) {
                     var response = res.data;
@@ -303,7 +375,7 @@ var app = new Vue({
             this.stats.threads = 0;
             this.stats.timer = 0;
             this.stats.pending = 0;
-	        //this.stats.totalpoints = 0;
+            //this.stats.totalpoints = 0;
         },
 
         estimateEarnings: function() {
@@ -362,6 +434,7 @@ var app = new Vue({
                 .catch(function(error) {
                     console.log(error);
                 });
+
             axios.get(this.urls.api.GetPoolDataRec)
                 .then(function(response) {
                     self.poolDataRec = response.data.result.data;
@@ -381,12 +454,12 @@ var app = new Vue({
                     console.log(error);
                 });
         },
-	    
+
         checkForUpdates: function() {
             var self = this;
             axios({
                     method: 'GET',
-                    url: this.urls.api.CheckForUpdates+self.version,
+                    url: this.urls.api.CheckForUpdates + self.version,
                 })
                 .then(function(response) {
                     self.update = response.data.support.result;
@@ -431,7 +504,7 @@ var app = new Vue({
 
         minerHashrate: function() {
             var hashrate = this.stats.hashrate === null ? 0 : this.stats.hashrate;
-            
+
             if (hashrate < 1e3) {
                 return `${hashrate.toFixed(2)} H/s`;
             } else if (hashrate < 1e6) {
@@ -439,20 +512,20 @@ var app = new Vue({
             } else if (hashrate < 1e9) {
                 return `${Math.round((hashrate / 1e6) * 100) / 100} MH/s`;
             } else if (hashrate < 1e12) {
-                return `${(hashrate / 1e9).toFixed(2)} GH/s`;
+                return `${Math.round((hashrate / 1e9) * 100) / 100} GH/s`;
             } else if (hashrate < 1e15) {
-                return `${(hashrate / 1e12).toFixed(2)} TH/s`;
+                return `${Math.round((hashrate / 1e12) * 100) / 100} TH/s`;
             } else if (hashrate < 1e18) {
-                return `${(hashrate / 1e15).toFixed(2)} PH/s`;
+                return `${Math.round((hashrate / 1e15) * 100) / 100} PH/s`;
             } else {
                 // Handle very large values if needed
-                return `${(hashrate / 1e18).toFixed(2)} EH/s`; // Exahashes per second
+                return `${Math.round((hashrate / 1e18) * 100) / 100} EH/s`; // Exahashes per second
             }
         },
 
         minerHashes: function() {
             var hashes = numeral(this.stats.totalHashes === null ? 0 : this.stats.totalHashes).format('0,0');
-            return `${hashes}`;
+            return `${hashes} Hashes`;
         },
 
         RecomendedCoin: function() {
@@ -461,7 +534,7 @@ var app = new Vue({
 
         minerPing: function() {
             var ping = numeral(this.stats.ping).format('0,0');
-            return `NON PING REQUIRED`;
+            return `${ping} ms`;
         },
 
         minerThreads: function() {
@@ -489,18 +562,21 @@ var app = new Vue({
         },
 
 
-	    minerPointsEarned: function() {
+        minerPointsEarned: function() {
             var testing = numeral(this.pointsPerHash * this.stats.totalHashes).format('0,0.00000000000000000000');
 
             if (testing != 0.00000000000000000000) {
 
                 axios({
                     method: 'GET',
-                    url: this.urls.api.GetApproximatedPointsEarnings+this.formSettings.userId,
+                    url: this.urls.api.GetApproximatedPointsEarnings + this.formSettings.userId,
                 }).then(function(response) {
                     toastr.remove();
-                    toastr.success(`Your 1 Mining Points and ${response.data.minerBooster} XP has been Added to your Account`);
-		        }).catch(function(error) {
+                    if (response.status == 403) {
+                        toastr.error('We have found Your Account But Give it 1 Hour to Verify to Earn Points, take few Tries before Earning.')
+                    }
+                    toastr.success(`Your Recieved Mining Points and ${response.data.minerBooster} XP has been Added to your Account`);
+                }).catch(function(error) {
                     toastr.remove();
                     toastr.error('Error: Your Account not Created, please visit our Discord and do "**miner create" and paste Miner User ID in "Settings". if this error still happens, Contact us on Discord');
                 });
@@ -509,7 +585,7 @@ var app = new Vue({
 
                 axios({
                         method: 'GET',
-                        url: this.urls.api.GetUserChecker+this.formSettings.userId,
+                        url: this.urls.api.GetUserChecker + this.formSettings.userId,
                     })
                     .then(function(res) {
                         var resopnse = res.data;
@@ -524,7 +600,7 @@ var app = new Vue({
 
             return `${(testing / 1.00000000000000000000).toFixed(20)}`;
         },
-	    
+
         areEstimatedEarningsEmpty: function() {
             return this.estimatedEarnings.length === 0;
         },
@@ -534,18 +610,18 @@ var app = new Vue({
         },
 
         urls: function() {
-			var self = this;
+            var self = this;
             return {
                 api: {
                     GetPoolData: `${this.url}/v4/cryptoendpoint/miner/PoolData/SupportCreator/`,
-                    GetPoolDataRec: `${this.url}/v4/cryptoendpoint/miner/pyrin/recomended/PoolData/`,
+                    GetPoolDataRec: `${this.url}/v4/cryptoendpoint/miner/xmr/recomended/PoolData/`,
                     CheckForUpdates: `${this.url}/v4/cryptoendpoint/miner/CheckForUpdates/`,
-                    GetPointsPerHash: `${this.url}/v4/cryptoendpoint/miner/pyrin/PointsPerHash/`,
-                    GetApproximatedPointsEarnings: `${this.url}/v4/cryptoendpoint/miner/pyrin/UpdatingPoints/`,
+                    GetPointsPerHash: `${this.url}/v4/cryptoendpoint/miner/xmr/PointsPerHash/`,
+                    GetApproximatedPointsEarnings: `${this.url}/v4/cryptoendpoint/miner/xmr/UpdatingPoints/`,
                     GetUserChecker: `${this.url}/v4/cryptoendpoint/miner/UserChecker/`,
                 },
                 web: {
-                    EarnMining: `https://github.com/ChisdealHDAPP/nekosunevrapp-miner/releases/`+self.version,
+                    EarnMining: `https://github.com/ChisdealHDAPP/nekosunevrapp-miner/releases/` + self.version,
                     PanelAccountDetails: `https://apps.nekosunevr.co.uk/`,
                 },
             };
@@ -576,4 +652,3 @@ var app = new Vue({
     }
 
 });
-

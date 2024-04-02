@@ -1,195 +1,197 @@
-lolMiner 1.53
+SRBMiner-MULTI AMD & NVIDIA & INTEL & CPU cryptocurrency miner
+==================================================================
+https://www.srbminer.com
 
-For a short introduction how to mine using lolMiner, see
-https://github.com/Lolliedieb/lolMiner-releases/wiki
+SRBMiner-Multi is a cryptocurrency miner that can mine up to 4 different algorithms/coins at the same time!
+Supported OS: Win64 & Linux
 
-Also have a look to the mine_coin.bat or mine_coin.sh files which can be used as 
-starting point to run lolMiner on the command line.
+For a list of supported algorithms and their devfee's, run miner with --list-algorithms parameter.
+For a list of parameters to set up the miner, run miner with --help parameter.
 
-Here is a list of the most relevant parameters for lolMiner:
 
-General:
-  -h [ --help ]                         Help screen
-  --config arg (=./lolMiner.cfg)        Config file
-  --json arg (=./user_config.json)      Config file in Json format
-  --profile arg                         Profile to load from Json file
-  --nocolor [=arg(=on)] (=off)          Disable colors in output
-  --basecolor [=arg(=on)] (=off)        Use 16 colors scheme for non-rgb 
-                                        terminals
-  --list-coins                          List all supported coin profiles
-  --list-algos                          List all supported algorithms
-  --list-devices                        List all supported & detected GPUs in 
-                                        your system
-  -v [ --version ]                      Print lolMiner version number
+==================================================================
+SUPPORTED GPU'S
 
-Mining:
-  -c [ --coin ] arg                     The coin to mine
-  -a [ --algo ] arg                     The algorithm to mine. 
-                                        This is an alternative to --coin. 
-  -p [ --pool ] arg                     Mining pool to mine on
-                                        Format: <pool>:<port>
-  -u [ --user ] arg                     Wallet or pool user account to mine on
-  --pass arg                            Pool user account password (Optional)
-  --tls arg                             Toggle TLS ("on" / "off")
-  --socks5 arg (=nosocks)               Specifies for a Socks 5 based proxy 
-                                        server. Format <ip>:<port>.
-  --dns-over-https arg (=1)             Toggle dns over https. 
-                                        0=default dns only
-                                        1=DoH with default dns as backup 
-                                        (default)
-                                        2=DNS over https enforced
-  --devices arg                         The devices to mine on 
-                                        Values: ALL / AMD / NVIDIA or a comma 
-                                        separated list of indexces.
-  --devicesbypcie [=arg(=on)] (=off)    Interpret --devices as list of PCIE 
-                                        BUS:SLOT pair
-  --pers arg                            The personalization string. 
-                                        Required when using --algo for Equihash
-                                        algorithms
-  --keepfree arg (=5)                   Set the number of MBytes of GPU memory 
-                                        that should be left free by the miner.
-  --benchmark arg                       The algorithm to benchmark
+==================================================================
+AMD
+==================================================================
 
-Managing Options:
-  --watchdog arg (=script)              Specify which action to take when a 
-                                        card is detected to be crashed.
-                                        "off": Continue working on remaining 
-                                        cards. No action.
-                                        "exit": Exit the miner with exit code 
-                                        42 to ask for a restart. Recommended 
-                                        for Nvidia cards.
-                                        "script": Call an external script. 
-                                        Default and recommended for AMD cards.
-  --watchdogscript arg                  Specify which script to be executed 
-                                        when a hung GPU is detected
-  --singlethread [=arg(=-1)] (=-2)      Enable single mining thread mode for 
-                                        all GPUs (-1) or for a specific GPU id.
-  --tstart arg (=0)                     Minimal temperature for a GPU to start 
-                                        in degree C. If set to 0 disables 
-                                        restart below a fixed temperature.
-  --tstop arg (=0)                      Temperature to pause or stop a GPU from
-                                        mining in degree C. If set to 0 
-                                        disables stop above a fixed 
-                                        temperature.
-  --tmode arg (=edge)                   Mode for temperature management.
-                                        Use "edge" (default), "junction" or 
-                                        "memory" to set the mode for 
-                                        temperature management.
++ RX 7900
++ RX 6500/6600/6650/6700/6750/6800/6900/6950
++ RX 5300/5400/5500/5600/5700
++ VEGA 56/64/FE/VII
++ RX 460/470/480/550/560/570/580/590
 
-Statistics:
-  --apiport arg (=0)                    The port the API will use
-  --apihost arg (=0.0.0.0)              The host binding the API will use
-  --longstats arg (=60)                 Long statistics interval
-  --shortstats arg (=15)                Short statistics interval
-  --statsformat arg (=extended)         Format for long statistics.
-                                        Use --help-format to get an overview of
-                                        available fields.
-  --hstats [=arg(=0)] (=0)              Select stats to be drawn in a 
-                                        horizontal manner for each GPU 
-                                        (default). The number overwrites the 
-                                        terminal width detection.
-  --vstats [=arg(=0)] (=-1)             Select stats to be drawn in a vertical 
-                                        manner for each GPU. The number 
-                                        overwrites the terminal width 
-                                        detection.
-  --help-format [=arg(=1)]              Format description for --statsformat
-                                        
-  --digits arg                          Number of digits in hash speed after 
-                                        delimiter
-  --timeprint [=arg(=on)] (=off)        Enables time stamp on short statistics 
-                                        ("on" / "off")
-  --silence arg (=0)                    Triggers different levels of miner 
-                                        verbosity. 0 = normal information, 3 = 
-                                        minimal information.
-  --compactaccept [=arg(=on)] (=off)    Enables compact accept notification
-  --log [=arg(=on)]                     Enables printing a log file ("on" / 
-                                        "off")
-  --logfile arg                         Path to a custom log file location
+==================================================================
+NVIDIA
+==================================================================
 
-Overclock (Experimental):
-  --cclk arg (=*)                       The core clock used for the GPUs. Cards
-                                        are separated with a comma. "*" can be 
-                                        used to skip a card.
-                                        
-  --mclk arg (=*)                       The memory clock used for the GPUs. 
-                                        Cards are separated with a comma. "*" 
-                                        can be used to skip a card.
-                                        
++ Hopper
++ Ada Lovelace
++ Ampere 
++ Turing
++ Pascal
 
-Ethash Options:
-  --ethstratum arg (=ETHPROXY)          Ethash stratum mode. Available options:
-                                        ETHV1: EthereumStratum/1.0.0 (Nicehash)
-                                        ETHPROXY: Ethereum Proxy
-  --worker arg (=eth1.0)                Separate worker name for Ethereum Proxy
-                                        stratum mode.
-  --mode arg (=b)                       Kernel mode to mine on. Comma separated
-                                        values for configuring multiple cards 
-                                        differently.
-  --lhrtune arg (=auto)                 Offset to most important LHR 
-                                        parameters. If your card is unstable or
-                                        does not unlock try negative values. 
-                                        Range is +/-40.
-  --lhrwait arg (=0)                    Time in seconds to wait after startup 
-                                        before any LHR detection or calibration
-                                        takes place.
-  --lhrv3boost [=arg(=0)] (=1)          Activating experimental >90% unlock on 
-                                        LHR V3 (RTX 3050, 3080 12G) GPUS.
-  --disable-dag-verify [=arg(=1)] (=0)  Disable the CPU side verification and 
-                                        repair of DAG.
-  --dagdelay [=arg(=0)] (=-1)           Delay between creating the DAG buffers 
-                                        for the GPUs. Negative values enable 
-                                        parallel generation (default).
-  --enablezilcache [=arg(=1)] (=0)      Allows 8G+ GPUs to store the DAG for 
-                                        mining Zilliqa. It will generated only 
-                                        once and offers a faster switching.
-  --benchepoch arg (=440)               The DAG epoch the denchmark mode will 
-                                        use
+==================================================================
+INTEL
+==================================================================
 
-Altcoin Options:
-  --ergo-prebuild arg (=-1)             Disable (0) or Enable (1) the function 
-                                        of pre-building the dataset for Ergo. 
-                                        -1 refers to the card default.
-  --ton-mode arg (=0)                   Sets the ton pool commication mode.
-                                          0: automatic selection(default)
-                                          1: ton-miner compatible
-                                          2: ton-pool.com websocket
-                                          3: toncoinpool.io stratum
-                                          4: tonuniverse.com compatible
++ Alchemist
 
-Ethash Expert Options:
-  --workmulti arg (=192)                Modifys the amount of Ethash work a GPU
-                                        does per batch.
-  --rebuild-defect arg (=3)             Triggers a DAG rebuild if a card 
-                                        produced <param> defect shares. Default
-                                        is 3, use 0 to deactivate the rebuild.
-  --enable-ecip1099 [=arg(=on)] (=off)  Enable reduced DAG size for mining ETC 
-                                        from block 11.730.000 and higher.
+==================================================================
+SUPPORT
+==================================================================
 
-Algorith Split Options:
-  --dualmode arg (=none)                Dual mode used. Allowed options:
-                                        none, zil, zilEx, eth, etc
-  --dualpool arg                        Pool configuration for extra 
-                                        connection, Format <pool>:<port>
-  --dualuser arg                        Username or wallet address for the 
-                                        extra connection
-  --dualpass arg                        Password for the extra connection 
-                                        (Optional)
-  --dualworker arg (=eth1.0)            Separate worker name for the 2nd 
-                                        connection.
-  --dualtls arg                         Toggle TLS ("on" / "off") for the 2nd 
-                                        connection.
-  --dualdevices arg                     Split rule for etc and beam split mode.
-                                        Use a comma separated list of indexes 
-                                        or "4G" (default).
-  --dualfactor arg (=auto)              The ratio in mining speed between the 
-                                        primary and the secondary algorithm in 
-                                        dual mining. Alternative to 
-                                        --maxdualimpact.
-  --maxdualimpact arg (=auto)           The maximum impact on the eth mining 
-                                        speed in dual mining in %. Default is *
-                                        for an automatic mode. Can be a comma 
-                                        separated list for different GPUs.
+Github:
+https://github.com/doktor83/SRBMiner-Multi
+
+Forum:
+https://bitcointalk.org/index.php?topic=5190081.0
+
+Discord:
+https://discord.gg/zXY23De
+
+Youtube:
+https://www.youtube.com/c/SRBMinerCPUGPUminer
+
+
+==================================================================
+INFORMATIONS, NOTES AND LICENSES
+==================================================================
+
+
+SRBMiner-MULTI uses a part of WinIO library from Yariv Kaplan.
+SRBMiner-MULTI uses a part of WinRing0 library from OpenLibSys.org.
+SRBMiner-MULTI uses the RandomX library from Tevador (tevador@gmail.com).
+
+
+LICENSES:
+
+WinIO
+==============
+END USER LICENSE AGREEMENT
+
+Software License Agreement for WinIo
+The following terms apply to all files associated with the software unless
+explicitly disclaimed in individual files.
+
+IMPORTANT- PLEASE READ CAREFULLY: BY INSTALLING THE SOFTWARE (AS DEFINED BELOW),
+OR COPYING THE SOFTWARE, YOU (EITHER ON BEHALF OF YOURSELF AS AN INDIVIDUAL OR
+ON BEHALF OF AN ENTITY AS ITS AUTHORIZED REPRESENTATIVE) AGREE TO ALL OF THE
+TERMS OF THIS END USER LICENSE AGREEMENT ("AGREEMENT") REGARDING YOUR USE OF
+THE SOFTWARE. IF YOU DO NOT AGREE WITH ALL OF THE TERMS OF THIS AGREEMENT, DO
+NOT INSTALL, COPY OR OTHERWISE USE THE SOFTWARE.
+
+1. GRANT OF LICENSE: Subject to the terms below, Yariv Kaplan ("AUTHOR") hereby
+grants you a non-exclusive, non-transferable, non-assignable license to install
+and to use the downloadable version of WinIo ("SOFTWARE").
+
+a. Redistributable Code. You may reproduce and distribute the object code form
+of the SOFTWARE solely in conjunction with, and as part of, your application
+("Permitted Application"); provided that you comply with the following:
+
+If you redistribute any portion of the Redistributable Code, you agree that:
+
+(i) you will only distribute the Redistributable Code in conjunction with, and
+as part of, your Permitted Application which adds significant functionality to
+the Redistributable Code and that distribution of the Permitted Application does
+not compete with the AUTHOR's distribution of the SOFTWARE;
+
+(ii) you will include a valid copyright notice on your Permitted Application;
+
+(iii) you will not permit further redistribution of the Redistributable Code;
+
+(iv) you will indemnify, hold harmless, and defend the AUTHOR from and against
+any claims or lawsuits, including attorneys' fees, that arise or result from
+the use or distribution of your Permitted Application.
+
+b. License to use Source Code. You may not sell, lease, rent, transfer or
+sublicense the source code of this SOFTWARE.
+
+2. MODIFICATION: SOFTWARE Source Code may be modified without the prior written
+permission of the AUTHOR. Any modifications made to the SOFTWARE will continue
+to be subject to the terms and conditions of this AGREEMENT.
+
+3. COPYRIGHT: All rights, title, and copyrights in and to the SOFTWARE and any
+copies of the SOFTWARE are owned by the AUTHOR. The SOFTWARE is protected by
+copyright laws and international treaty provisions. Therefore, you must treat
+the SOFTWARE like any other copyrighted material.
+
+4. TITLE: You acknowledge that no title to the intellectual property in the
+SOFTWARE is transferred to you. Title, ownership, rights, and intellectual
+property rights in and to the SOFTWARE shall remain the exclusive property of
+the AUTHOR. The SOFTWARE is protected by copyright laws of the United States
+and international treaties.
+
+5. LIMITATION OF LIABILITY: You must assume the entire risk of using the
+SOFTWARE.
+
+IN NO EVENT SHALL THE AUTHOR BE LIABLE TO ANY PARTY FOR DIRECT, INDIRECT,
+SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OF THIS
+SOFTWARE, ITS DOCUMENTATION, OR ANY DERIVATIVES THEREOF, EVEN IF THE AUTHOR
+HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+THE AUTHOR SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE, AND NON-INFRINGEMENT. THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS,
+AND THE AUTHOR HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES,
+ENHANCEMENTS, OR MODIFICATIONS.
 
 
 
 
+WinRing0
+==============
+Copyright (c) 2007-2009 OpenLibSys.org. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+
+
+RandomX
+==============
+Copyright (c) 2018-2019, tevador <tevador@gmail.com>
+Copyright (c) 2014-2019, The Monero Project
+
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+	* Redistributions of source code must retain the above copyright
+	  notice, this list of conditions and the following disclaimer.
+	* Redistributions in binary form must reproduce the above copyright
+	  notice, this list of conditions and the following disclaimer in the
+	  documentation and/or other materials provided with the distribution.
+	* Neither the name of the copyright holder nor the
+	  names of its contributors may be used to endorse or promote products
+	  derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
